@@ -13,7 +13,7 @@ QPlayer 的独立音源插件，由用户自行安装。它实现公开的 QPlay
 
 通过 QPlayer 基于能力声明的 ABI 提供：
 
-- 搜索（歌曲、专辑、歌手）与热搜关键词
+- 搜索（歌曲、专辑、歌手、歌单）与热搜关键词；歌单搜索结果提供封面，并可打开详情播放
 - 首页推荐：每日推荐歌曲、推荐歌单，以及按官方分组返回的歌单分区（雷达歌单、
   专属场景歌单等）
 - 歌曲、歌单、专辑、歌手详情
@@ -40,6 +40,9 @@ AMLL 旧站已重定向到 `api.beta.amllhub.bikonoo.com`，插件从 0.5.7 起�
 
 完整的 ABI 与包格式见
 [QPlayer 插件模板](https://github.com/TIMER-err/qplayer-plugin-template/blob/main/docs/ABI.md)。
+
+插件 0.5.8 起需要 QPlayer 1.9.7 或更新版本，插件 ABI 仍为 `1.0`。
+旧版宿主不识别新增的 `searchPlaylists` 能力，请先更新 QPlayer 再安装插件。
 
 ## 构建
 

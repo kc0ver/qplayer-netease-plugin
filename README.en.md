@@ -16,7 +16,8 @@ responsible for complying with the service terms and local law.
 
 Provided through QPlayer's capability-based ABI:
 
-- Search (songs, albums, artists) and trending keywords
+- Search (songs, albums, artists, playlists) and trending keywords; playlist results
+  include covers and open playlist details for playback
 - Home content: daily recommended songs, recommended playlists, and playlist
   sections following the service's own grouping (radar playlists, scenario
   playlists and so on)
@@ -50,6 +51,10 @@ Login credentials are stored only through QPlayer's namespaced encrypted vault.
 
 The public ABI and package format are documented in the
 [QPlayer plugin template](https://github.com/TIMER-err/qplayer-plugin-template/blob/main/docs/ABI.en.md).
+
+Plugin 0.5.8 and later requires QPlayer 1.9.7 or later. The plugin ABI remains `1.0`.
+Older hosts do not recognize the new `searchPlaylists` capability.
+Update QPlayer before installing the plugin.
 
 ## Build
 

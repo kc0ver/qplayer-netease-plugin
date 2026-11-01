@@ -657,7 +657,7 @@ function searchPage(args, type, resultKey, mapper) {
     var result = body.result || {};
     var items = result[resultKey] || [];
     var total = Number(result[resultKey.slice(0, -1) + "Count"] || items.length);
-    return {items: items.map(mapper), nextCursor: offset + items.length < total
+    return {items: items.map(mapper), nextCursor: items.length > 0 && offset + items.length < total
       ? String(offset + items.length) : ""};
   });
 }
@@ -668,6 +668,10 @@ function searchAlbums(args) {
 
 function searchArtists(args) {
   return searchPage(args, 100, "artists", function (artist) { return artistDto(artist, [], []); });
+}
+
+function searchPlaylists(args) {
+  return searchPage(args, 1000, "playlists", playlistDto);
 }
 
 function hotSearch() {
@@ -1454,6 +1458,7 @@ module.exports = {handlers: {
   searchSongs: searchSongs,
   searchAlbums: searchAlbums,
   searchArtists: searchArtists,
+  searchPlaylists: searchPlaylists,
   home: home,
   songDetails: function (args) { return songDetails(args.ids || []); },
   playlistDetails: playlistDetails,
