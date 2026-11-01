@@ -26,6 +26,17 @@ Provided through QPlayer's capability-based ABI:
   replacement with centred cropping for non-square images, scrobbling, heart mode
   and sharing
 
+The plugin requests AMLL TTML and NetEase YRC/LRC concurrently, then returns the higher-quality lyric set:
+
+- Exclude empty or unsynchronized lyrics and structurally broken TTML. Exclude excerpts below 80% of the longest usable candidate's text.
+- Compare word-timing coverage first, then background/duet information, translation coverage, romanization coverage, and text coverage. Format alone does not determine quality.
+- Prefer AMLL on ties. Return the selected source's complete asset set without mixing timelines across sources.
+- If one request fails, use the other source. If both fail, report the request error to QPlayer.
+
+The old AMLL site redirects to `api.beta.amllhub.bikonoo.com`.
+Starting with 0.5.7, the plugin declares this exact domain so QPlayer can validate each redirect.
+No QPlayer changes or weaker network permission checks are required.
+
 Two plugin-owned entries, declared by the plugin and rendered by QPlayer:
 
 - **Listen Together** (player entry) — the room protocol, synchronization policy,
@@ -48,6 +59,12 @@ Produce an unsigned development package:
 chmod +x scripts/package.sh
 ./scripts/package.sh
 python3 scripts/verify-package.py dist/*.qplug
+```
+
+Run the lyric selection tests locally:
+
+```bash
+bun test scripts/lyrics.test.js
 ```
 
 QPlayer shows a code-execution warning for manually imported packages whose

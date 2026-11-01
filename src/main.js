@@ -22,6 +22,7 @@ function call(method, args) { return qplayer.call(method, args || {}); }
 
 var xeapiTransport = require("./xeapi");
 var watchman = require("./watchman");
+var lyricSelection = require("./lyrics");
 
 function padLeft(value, width, fill) {
   value = String(value);
@@ -1203,25 +1204,18 @@ function resolveStream(args) {
 }
 
 function lyrics(args) {
-  function providerLyrics() { return eapi("/api/song/lyric/v1", {
+  var provider = eapi("/api/song/lyric/v1", {
     id: args.id, cp: false, tv: 0, lv: 0, rv: 0, kv: 0, yv: 0, ytv: 0, yrv: 0
-  }).then(function (body) {
-    var assets = [];
-    if (body.yrc && body.yrc.lyric) assets.push({format: "yrc", role: "original", text: body.yrc.lyric});
-    else if (body.lrc && body.lrc.lyric) assets.push({format: "lrc", role: "original", text: body.lrc.lyric});
-    if (body.tlyric && body.tlyric.lyric) assets.push({format: "lrc", role: "translation", text: body.tlyric.lyric});
-    if (body.romalrc && body.romalrc.lyric) assets.push({format: "lrc", role: "romanization", text: body.romalrc.lyric});
-    return {assets: assets};
-  }); }
-  return call("http.request", {
+  }).then(lyricSelection.netease);
+  var amll = call("http.request", {
     url: AMLL_HOST + "/ncm-lyrics/" + encodeURIComponent(args.id) + ".ttml",
     method: "GET", timeoutMs: 8000
   }).then(function (response) {
-    if (response.status === 200 && String(response.body || "").trim()) {
-      return {assets: [{format: "ttml", role: "original", text: response.body}]};
-    }
-    return providerLyrics();
-  }, function () { return providerLyrics(); });
+    return response.status === 200
+      ? {assets: [{format: "ttml", role: "original", text: String(response.body || "")}]}
+      : {assets: []};
+  });
+  return lyricSelection.resolve(amll, provider);
 }
 
 function account() {
